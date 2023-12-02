@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Student - Liquid</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img class="logo-liquid-sidebar" src="assets/logo liquid.png" alt="LIQUID Logo">
+            <div class="liquid-text-sidebar">LIQUID</div>
+        </div>
+        <div class="sidebar-menu">
+            <a href="dashboard_mahasiswa.php" style="color: inherit;text-decoration: none;">
+                <div class="menu-item active">
+                    <img src="assets/dashboard logo.svg" alt="Dashboard Icon">
+                    <span>Dashboard</span>
+                </div>
+            </a>
+            <a href="grades.php" style="color: inherit;text-decoration: none;">
+            <div class="menu-item">
+                <img src="assets/grades logo.svg" alt="Grades Icon">
+                <span>Grades</span>
+            </div>
+            </a>
+        </div>
+        <a href="logout.php">
+            <div class="logout">
+                <img src="assets/logo logout.svg" alt="Logout Icon">
+                <span>Logout</span>
+            </div>
+        <a>
+    </div>
+
+    <div class="content">
+        <div class="header">
+            <div class="welcome-back">
+                WELCOME BACK! <?php echo $_SESSION['user_data']['nama']; ?>
+            </div>
+            <div class="profile-section">
+                <input type="text" class="search-bar" placeholder="Find Your Quiz">
+                <div class="profile-info">
+                    <img class="profile-picture" src="assets/user.png" alt="Profile Picture">
+                    <div class="profile-details">
+                        <div class="full-name"><?php echo $_SESSION['user_data']['nama']; ?></div>
+                        <div class="student-number"><?php echo $_SESSION['user_data']['id_mahasiswa']; ?></div>
+                        <div class="jurusan"><?php echo $_SESSION['user_data']['jurusan']; ?></div>
+                    </div>
+                </div>
+                <div id="profilePopup">
+                    <!-- Konten pop-up, seperti informasi profil -->
+                    <img class="popup-profile-picture" src="assets/user.png" alt="Profile Picture">
+                    <div class="popup-profile-details">
+                        <div class="full-name"><?php echo $_SESSION['user_data']['nama']; ?></div>
+                        <div class="student-number"><?php echo $_SESSION['user_data']['id_mahasiswa']; ?></div>
+                        <div class="jurusan"><?php echo $_SESSION['user_data']['jurusan']; ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="available-quiz">
+                Available Quiz:
+                <?php
+                foreach ($kuis_mahasiswa as $kuis) {
+                    echo "<div class='quiz-container'>";
+                    $idKuis = $kuis['id_kuis'];
+                    echo "<a href='kerjakan_kuis.php?id_kuis=$idKuis' class='quiz-item'>";
+                    echo "<div class='quiz-logo'>";
+                    echo "<img src='assets/logo kuis.png' alt='Logo Kuis' width='64' height='64'>";
+                    echo "</div>";
+                    echo "<div class='quiz-details'>";
+                    echo "<h3>{$kuis['nama_kuis']}</h3>";
+                    echo "</div>";
+                    echo "</a>";
+                    echo "</div>"; // Tutup quiz-container di sini
+                }
+                ?>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Fungsi untuk membuka pop-up
+        function openPopup() {
+            var popup = document.getElementById('profilePopup');
+            popup.style.display = 'block';
+        }
+    
+        // Fungsi untuk menutup pop-up
+        function closePopup() {
+            var popup = document.getElementById('profilePopup');
+            popup.style.display = 'none';
+        }
+    
+        document.addEventListener('DOMContentLoaded', function () {
+            var profilePicture = document.querySelector('.profile-picture');
+    
+            profilePicture.addEventListener('click', function () {
+                openPopup();
+            });
+    
+            // Menambahkan event listener untuk menutup pop-up saat kursor berada di luar pop-up
+            document.addEventListener('click', function (event) {
+                var popup = document.getElementById('profilePopup');
+                if (!profilePicture.contains(event.target) && !popup.contains(event.target)) {
+                    closePopup();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

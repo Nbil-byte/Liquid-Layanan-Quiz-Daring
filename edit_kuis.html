@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Kuis</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1>Edit Kuis</h1>
+        <form method="post">
+            <!-- Input untuk ID kuis -->
+            <input type="hidden" name="id_kuis" value="<?php echo htmlspecialchars($kuis_details['id_kuis']); ?>">
+    
+            <!-- Nama Kuis -->
+            <div class="mb-3">
+                <label for="nama_kuis" class="form-label">Nama Kuis:</label>
+                <input type="text" name="nama_kuis" id="nama_kuis"
+                       value="<?php echo htmlspecialchars($kuis_details['nama_kuis']); ?>" class="form-control">
+            </div>
+    
+            <!-- Deskripsi Kuis -->
+            <div class="mb-3">
+                <label for="deskripsi" class="form-label">Deskripsi:</label>
+                <textarea name="deskripsi" id="deskripsi"
+                          rows="4" class="form-control"><?php echo htmlspecialchars($kuis_details['deskripsi']); ?></textarea>
+            </div>
+    
+            <!-- Tombol Update Kuis -->
+            <button type="submit" class="btn btn-primary">Update Kuis</button>
+    
+            <!-- Tombol Hapus Kuis -->
+            <button type="button" class="btn btn-danger" id="hapus-kuis" data-idkuis="<?php echo htmlspecialchars($kuis_details['id_kuis']); ?>">Hapus Kuis</button>
+        </form>
+
+        <!-- Formulir untuk menambah soal -->
+        <div class="mt-4">
+            <h3>Tambah Soal</h3>
+            <form method="post">
+                <input type="hidden" name="csrf_token"
+                    value="<?php echo isset($_SESSION['csrf_token']) ? htmlspecialchars($_SESSION['csrf_token']) : ''; ?>">
+                <input type="hidden" name="id_kuis"
+                    value="<?php echo isset($kuis_details['id_kuis']) ? htmlspecialchars($kuis_details['id_kuis']) : ''; ?>">
+                <div class="mb-3">
+                    <label for="pertanyaan" class="form-label">Pertanyaan:</label>
+                    <textarea name="pertanyaan" id="pertanyaan" rows="4" required
+                        class="form-control"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="pilihan_a" class="form-label">Pilihan A:</label>
+                    <input type="text" id="pilihan_a" name="pilihan_a" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="pilihan_b" class="form-label">Pilihan B:</label>
+                    <input type="text" id="pilihan_b" name="pilihan_b" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="pilihan_c" class="form-label">Pilihan C:</label>
+                    <input type="text" id="pilihan_c" name="pilihan_c" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="kunci_jawaban" class="form-label">Kunci Jawaban:</label>
+                    <input type="text" id="kunci_jawaban" name="kunci_jawaban" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="angka" class="form-label">Poin:</label>
+                    <input type="number" id="angka" name="poin" required class="form-control">
+                </div>
+                <button type="submit" class="btn btn-success">Tambah Soal</button>
+            </form>
+        </div>
+
+        <h3 class="mt-4">Total Poin : <?php echo $total_poin; ?> </h3>
+
+        <!-- Tampilkan daftar soal -->
+        <div class="daftar-soal-container mt-4">
+            <h3>Daftar Soal</h3>
+            <?php
+            if ($soal_list) {
+                foreach ($soal_list as $soal) {
+                    $soal_id = $soal['id_soal'];
+                    echo "<div id='$soal_id'>";
+                    echo "<p>No. Soal: " . htmlspecialchars($soal['no_soal']) . "</p>";
+                    echo "<p>Pertanyaan: " . htmlspecialchars($soal['pertanyaan']) . "</p>";
+                    echo "<p>Pilihan A: " . htmlspecialchars($soal['opsi_jawaban1']) . "</p>";
+                    echo "<p>Pilihan B: " . htmlspecialchars($soal['opsi_jawaban2']) . "</p>";
+                    echo "<p>Pilihan C: " . htmlspecialchars($soal['opsi_jawaban3']) . "</p>";
+                    echo "<p>Kunci Jawaban: " . htmlspecialchars($soal['kunci_jawaban']) . "</p>";
+                    echo "<p>Poin: " . htmlspecialchars($soal['poin']) . "</p>";
+                    echo "<button class='btn btn-danger hapus-soal' data-idsoal='$soal_id'>Hapus Soal</button>";
+                    echo "<hr>";
+                    echo "</div>";
+                }
+            } else {
+                echo "<p>Tidak ada soal untuk kuis ini.</p>";
+            }
+            ?>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (jQuery and Popper.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Ambil semua elemen tombol "Hapus Soal" dengan kelas .hapus-soal
+            var deleteButtons = document.querySelectorAll('.hapus-soal');
+
+            // Tambahkan event listener untuk setiap tombol hapus
+            deleteButtons.forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    // Mencegah perilaku default dari tombol
+                    event.preventDefault();
+
+                    // Dapatkan ID soal dari atribut data-idsoal
+                    var idSoal = button.getAttribute("data-idsoal");
+
+                    // Tampilkan konfirmasi hapus
+                    var konfirmasi = confirm("Anda yakin ingin menghapus soal ini?");
+
+                    if (konfirmasi) {
+                        // Kirim permintaan AJAX untuk menghapus soal
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "hapus_soal.php", true);
+                        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                var response = JSON.parse(xhr.responseText);
+                                if (response.status === "success") {
+                                    alert("Soal berhasil dihapus.");
+
+                                    // Hapus elemen dari daftar soal tanpa perlu me-refresh halaman
+                                    button.parentNode.remove();
+                                    setTimeout(function () {
+                                        location.reload(); // Refresh halaman setelah menghapus soal
+                                    }, 250); // Sesuaikan delay sesuai kebutuhan
+                                } else {
+                                    alert("Gagal menghapus soal. Silakan coba lagi.");
+                                }
+                            }
+                        };
+                        // Kirim data ID soal ke server
+                        xhr.send("id_soal=" + idSoal);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    // Ambil tombol "Hapus Kuis" dengan ID "hapus-kuis"
+    var deleteKuisButton = document.getElementById('hapus-kuis');
+
+    // Tambahkan event listener untuk tombol hapus kuis
+    deleteKuisButton.addEventListener('click', function (event) {
+        // Mencegah perilaku default dari tombol
+        event.preventDefault();
+
+        // Dapatkan ID kuis dari data-idkuis
+        var idKuis = deleteKuisButton.getAttribute("data-idkuis");
+
+        // Tampilkan konfirmasi hapus
+        var konfirmasi = confirm("Anda yakin ingin menghapus kuis ini?");
+
+        if (konfirmasi) {
+            // Kirim permintaan AJAX untuk menghapus kuis
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "hapus_kuis.php", true);
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.status === "success") {
+                        alert("Kuis berhasil dihapus.");
+                        // Redirect ke halaman lain atau lakukan tindakan lain setelah menghapus kuis
+                        window.location.href = "dashboard_dosen.php";
+                    } else {
+                        alert("Gagal menghapus kuis. Silakan coba lagi.");
+                    }
+                }
+            };
+            // Kirim data ID kuis ke server
+            xhr.send("id_kuis=" + idKuis);
+        }
+    });
+});
+
+    </script>
+    
+
+</body>
+
+</html>

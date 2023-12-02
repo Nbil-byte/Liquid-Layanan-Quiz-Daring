@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[JUDUL KUIS] - Liquid</title>
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+            <!-- Navbar & Hero Start -->
+            <div class="container-xxl position-relative p-0">
+                <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+                    <a href="index.html" class="navbar-brand p-0">
+                        <img src="assets/logo liquid.png" alt="Logo">
+                    </a>
+                    <a href="index.html" class="navbar-brand p-0">
+                        <h1 class="m-0">Liquid</h1>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                        <span class="fa fa-bars"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarCollapse">
+                        <div class="navbar-nav ms-auto py-0">
+                            <a href="dashboard_mahasiswa.php" class="nav-item nav-link">Dashboard</a>
+                            <a href="grades.php" class="nav-item nav-link">Grades</a>
+                            <div class="profile-info">
+                                <img class="profile-picture" src="assets/user.png" alt="Profile Picture">
+                                <div class="profile-details">
+                                    <div class="full-name">[NAMA USER]</div>
+                                    <div class="student-number">[NIM USER]</div>
+                                    <div class="jurusan">[JURUSAN USER]</div>
+                                </div>
+                            </div>
+                            <div id="profilePopup">
+                                <!-- Konten pop-up, seperti informasi profil -->
+                                <img class="popup-profile-picture" src="assets/user.png" alt="Profile Picture">
+                                <div class="popup-profile-details">
+                                    <div class="full-name">[NAMA USER]</div>
+                                    <div class="student-number">[NIM USER]</div>
+                                    <div class="jurusan">[JURUSAN USER]</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                </div>
+            </div>
+            <!-- Navbar & Hero End -->
+    <br><br><br>
+    <div class="content-desc-kuis">
+        <div class="quiz-logo-judul-desc">
+            <img src="assets/logo kuis.png" alt="Logo Kuis" width="64" height="64">
+            <div class="quiz-details-judul-desc">
+                <h3><?php echo $nama_kuis; ?></h3>
+            </div>
+        </div>
+        <div class="col-12 justify-content-center bg-primary" style="border-radius: 25px;">
+            <div style="margin-left: 10px;">
+            <p><?php echo $desc; ?></p>
+            <p>Deadline: <?php echo $deadline; ?></p>
+            <p>Waktu Pengerjaan: <?php echo $waktu_pengerjaan; ?> menit</p>
+            <p>Jumlah Soal: <?php echo $jumlah_soal; ?></p>
+            <p>Dosen Pembuat: <?php echo $nama_dosen['nama']; ?></p>
+            </div>
+        </div>
+
+        <div class="tulisan-menarik-desc-kuis">
+                    <?php
+            echo "<form action='halaman_kuis.php' method='post'>";
+            echo "<input type='hidden' name='id_kuis' value='$id_kuis'>";
+            echo "<button type='submit' name='konfirmasi' class='start-quiz-button-desc-kuis'>Kerjakan Sekarang</button>";
+            echo "</form>";
+            ?>
+        </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    var markAsDoneButton = document.querySelector('.btn[data-action="toggle-manual-completion"]');
+    
+    // Mengambil status dari local storage
+    var isMarkedAsDone = localStorage.getItem('isMarkedAsDone') === 'true';
+
+    // Mengatur warna awal berdasarkan status yang ada di local storage
+    updateButtonColor();
+
+    markAsDoneButton.addEventListener('click', function () {
+        // Mengubah status dan menyimpannya di local storage
+        isMarkedAsDone = !isMarkedAsDone;
+        localStorage.setItem('isMarkedAsDone', isMarkedAsDone);
+
+        // Memanggil fungsi untuk memperbarui warna tombol
+        updateButtonColor();
+    });
+
+    // Fungsi untuk memperbarui warna tombol
+    function updateButtonColor() {
+        if (isMarkedAsDone) {
+            markAsDoneButton.style.backgroundColor = 'green';
+        } else {
+            markAsDoneButton.style.backgroundColor = '';
+        }
+    }
+});
+    </script>
+    <script>
+        // Fungsi untuk membuka pop-up
+        function openPopup() {
+            var popup = document.getElementById('profilePopup');
+            popup.style.display = 'block';
+        }
+    
+        // Fungsi untuk menutup pop-up
+        function closePopup() {
+            var popup = document.getElementById('profilePopup');
+            popup.style.display = 'none';
+        }
+    
+        document.addEventListener('DOMContentLoaded', function () {
+            var profilePicture = document.querySelector('.profile-picture');
+    
+            profilePicture.addEventListener('click', function () {
+                openPopup();
+            });
+    
+            // Menambahkan event listener untuk menutup pop-up saat kursor berada di luar pop-up
+            document.addEventListener('click', function (event) {
+                var popup = document.getElementById('profilePopup');
+                if (!profilePicture.contains(event.target) && !popup.contains(event.target)) {
+                    closePopup();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
+
+
+

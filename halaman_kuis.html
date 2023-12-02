@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[JUDUL KUIS] - Liquid</title>
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="navbar-desc-kuis">
+        <!-- Konten navbar - sesuaikan sesuai kebutuhan -->
+    </div>
+
+    <div class="content-desc-kuis">
+        <div class="quiz-logo-judul-desc">
+            <img src="assets/logo kuis.png" alt="Logo Kuis" width="64" height="64">
+            <div class="quiz-details-judul-desc">
+                <h4><?php echo $nama_kuis;?></h4>
+            </div>
+        </div>
+        <div class="col-12 justify-content-center bg-primary" style="border-radius: 25px;">
+            <div class="nomor-kuis d-flex justify-content-center">
+                Question <?php echo $soal_terpilih['no_soal']; ?>
+            </div>
+            <div class="soal-dan-pg">
+                <?php if ($soal_terpilih): ?>
+                    <h2><?php echo $soal_terpilih['pertanyaan']; ?></h2>
+
+                    <form action="" method="post">
+                        <!-- Opsi Pilihan Ganda -->
+                        <div class="options">
+                            <?php
+                            $opsi_jawaban = array(
+                                $soal_terpilih['opsi_jawaban1'],
+                                $soal_terpilih['opsi_jawaban2'],
+                                $soal_terpilih['opsi_jawaban3'],
+                                $soal_terpilih['kunci_jawaban']
+                            );
+                            shuffle($opsi_jawaban);
+
+                            $index = 0;
+                            foreach ($opsi_jawaban as $opsi) :
+                            ?>
+                                <label class="option-container">
+                                    <input type="radio" name="jawaban" value="<?php echo $opsi; ?>" <?php echo (isset($_SESSION['jawaban'][$nomor_soal]) && $_SESSION['jawaban'][$nomor_soal] === $opsi) ? 'checked' : ''; ?>>
+                                    <span class="checkmark"></span>
+                                    <?php echo $opsi; ?> <!-- Konversi index menjadi huruf A, B, C, dst. -->
+                                </label>
+                            <?php
+                                $index++;
+                            endforeach;
+                            ?>
+                        </div>
+                        <!-- Tombol Previous dan Next di pojok kiri dan kanan -->
+                        <div class="position-absolute bottom-0 start-0 bg-dark">
+                            <?php if ($nomor_soal > 1) : ?>
+                                <button class="btn btn-primary" type="submit" name="previous">Previous</button>
+                            <?php endif; ?>
+                        </div>
+                        <div class="position-absolute bottom-0 end-0 bg-dark">
+                            <?php if ($nomor_soal < count($soal_list)) : ?>
+                                <button class="btn btn-primary" type="submit" name="next">Next</button>
+                            <?php elseif ($nomor_soal == count($soal_list)) : ?>
+                                <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+                            <?php endif; ?>
+                        </div>
+                    </form>
+                <?php else: ?>
+                    <p>Soal tidak ditemukan.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
